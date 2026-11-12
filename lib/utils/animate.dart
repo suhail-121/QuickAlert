@@ -13,10 +13,7 @@ class Animate {
   }) {
     return Transform.scale(
       scale: animation.value,
-      child: Opacity(
-        opacity: animation.value,
-        child: child,
-      ),
+      child: Opacity(opacity: animation.value, child: child),
     );
   }
 
@@ -30,10 +27,7 @@ class Animate {
   }) {
     return Transform.rotate(
       angle: math.radians(animation.value * 360),
-      child: Opacity(
-        opacity: animation.value,
-        child: child,
-      ),
+      child: Opacity(opacity: animation.value, child: child),
     );
   }
 
@@ -48,10 +42,7 @@ class Animate {
     final curvedValue = Curves.easeInOutBack.transform(animation.value) - 1.0;
     return Transform(
       transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-      child: Opacity(
-        opacity: animation.value,
-        child: child,
-      ),
+      child: Opacity(opacity: animation.value, child: child),
     );
   }
 
@@ -66,10 +57,7 @@ class Animate {
     final curvedValue = Curves.easeInOutBack.transform(animation.value) - 1.0;
     return Transform(
       transform: Matrix4.translationValues(0.0, curvedValue * -200, 0.0),
-      child: Opacity(
-        opacity: animation.value,
-        child: child,
-      ),
+      child: Opacity(opacity: animation.value, child: child),
     );
   }
 
@@ -84,10 +72,7 @@ class Animate {
     final curvedValue = Curves.easeInOutBack.transform(animation.value) - 1.0;
     return Transform(
       transform: Matrix4.translationValues(curvedValue * 200, 0.0, 0.0),
-      child: Opacity(
-        opacity: animation.value,
-        child: child,
-      ),
+      child: Opacity(opacity: animation.value, child: child),
     );
   }
 
@@ -102,10 +87,7 @@ class Animate {
     final curvedValue = Curves.easeInOutBack.transform(animation.value) - 1.0;
     return Transform(
       transform: Matrix4.translationValues(curvedValue * -200, 0, 0),
-      child: Opacity(
-        opacity: animation.value,
-        child: child,
-      ),
+      child: Opacity(opacity: animation.value, child: child),
     );
   }
 }

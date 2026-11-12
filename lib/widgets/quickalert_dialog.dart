@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:quickalert/models/quickalert_animtype.dart';
 import 'package:quickalert/models/quickalert_options.dart';
@@ -130,36 +131,40 @@ class QuickAlert {
       width: width,
     );
 
-    Widget child = WillPopScope(
-      onWillPop: () async {
+    Widget child = PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
         options.timer?.cancel();
+        if (didPop) {
+          return;
+        }
         if (options.type == QuickAlertType.loading &&
             !disableBackBtn &&
             showCancelBtn) {
           if (options.onCancelBtnTap != null) {
             options.onCancelBtnTap!();
-            return false;
+            return;
           }
         }
-        return !disableBackBtn;
+        if (!disableBackBtn) {
+          Navigator.pop(context);
+        }
       },
       child: AlertDialog(
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),
-        content: QuickAlertContainer(
-          options: options,
-        ),
+        content: QuickAlertContainer(options: options),
       ),
     );
 
     if (options.type != QuickAlertType.loading) {
-      child = RawKeyboardListener(
+      child = KeyboardListener(
         focusNode: FocusNode(),
         autofocus: true,
-        onKey: (event) {
-          if (event is RawKeyUpEvent &&
+        onKeyEvent: (event) {
+          if (event is KeyUpEvent &&
               event.logicalKey == LogicalKeyboardKey.enter) {
             options.timer?.cancel();
             options.onConfirmBtnTap != null
@@ -172,8 +177,8 @@ class QuickAlert {
     }
 
     return showGeneralDialog(
-      barrierColor: barrierColor ?? Colors.black.withOpacity(0.5),
-      transitionBuilder: (context, anim1, __, widget) {
+      barrierColor: barrierColor ?? Colors.black.withValues(alpha: 0.5),
+      transitionBuilder: (context, anim1, _, widget) {
         switch (animType) {
           case QuickAlertAnimType.scale:
             return Animate.scale(child: child, animation: anim1);
@@ -192,17 +197,15 @@ class QuickAlert {
 
           case QuickAlertAnimType.slideInRight:
             return Animate.slideInRight(child: child, animation: anim1);
-
-          default:
-            return child;
         }
       },
       transitionDuration: const Duration(milliseconds: 200),
-      barrierDismissible:
-          autoCloseDuration != null ? false : barrierDismissible,
+      barrierDismissible: autoCloseDuration != null
+          ? false
+          : barrierDismissible,
       barrierLabel: '',
       context: context,
-      pageBuilder: (context, _, __) => Container(),
+      pageBuilder: (context, _, _) => Container(),
     );
   }
 }
